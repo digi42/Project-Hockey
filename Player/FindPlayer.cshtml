@@ -1,0 +1,20 @@
+﻿@{
+    Layout = "/Shared/_Modal.cshtml";
+}
+
+<form id="find-player" method="post">
+    <p class="instructions">Please provide at least 3 letters of Last Name to search.</p>
+    <div class="field medium">
+        <label>First Name</label>
+        <input type="text" name="firstName" />
+    </div>
+    <div class="field medium">
+        <label>Last Name</label>
+        <input type="text" name="lastName" required />
+    </div>
+    <div class="field medium">
+        <label>&nbsp;</label>
+        <button id="search" class="fill" type="button">Search</button>
+    </div>
+    <div class="results"></div>
+</form>

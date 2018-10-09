@@ -1,0 +1,30 @@
+﻿@model PH.Game.Model
+
+<a class="box" href="/game/@Model.GameId/boxscore">
+    <p class="trim elip">@Model.Date.ToString("ddd, MMM d") | @Model.FormattedTime | @Model.Location</p>
+    @if (Model.Completed && !Model.Forfeit)
+            {
+        <p class="@(Model.AwayScore > Model.HomeScore ? "highlight":"")"><span class="name elip">@Model.AwayName</span><span class="score">@(Model.InProgress ? Model.AwayScore.ToString() : "")</span></p>
+        <p class="@(Model.HomeScore > Model.AwayScore ? "highlight":"")"><span class="name elip">@@ @Model.HomeName</span><span class="score">@(Model.InProgress ? Model.HomeScore.ToString() : "")</span></p>
+    }
+
+    else if (Model.InProgress)
+    {
+        <p><span class="name elip">@Model.AwayName</span><span class="score">@(Model.InProgress ? Model.AwayScore.ToString() : "")</span></p>
+        <p><span class="name elip">@@ @Model.HomeName</span><span class="score">@(Model.InProgress ? Model.HomeScore.ToString() : "")</span></p>
+    }
+
+    else if (Model.Forfeit)
+    {
+        <p class="@(!Model.AwayForfeit ? "highlight":"")"><span class="name elip">@Model.AwayName</span><span class="score">@(Model.AwayForfeit ? "FL" : "FW")</span></p>
+        <p class="@(!Model.HomeForfeit ? "highlight":"")"><span class="name elip">@@ @Model.HomeName</span><span class="score">@(Model.HomeForfeit ? "FL" : "FW")</span></p>
+    }
+
+    else
+    {
+        <p class="elip">@Model.AwayName</p>
+        <p class="elip">@@ @Model.HomeName</p>
+    }
+    <p><em>@Model.Status</em></p>
+    <p class="trim"> @Model.GetDescription()</p>
+</a>

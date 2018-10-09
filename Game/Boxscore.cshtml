@@ -1,0 +1,316 @@
+﻿<!-- #region Setup -->
+@model PH.Game.Model
+
+
+@{
+    ViewBag.Title = "Boxscore | " + Model.AwayName + " @ " + Model.HomeName + " | " + Model.Date.ToString("M/d/yy");
+    int level = Model.AccessLevel;
+    ViewBag.Game = Model;
+    ViewBag.Class = "boxscore";
+
+    // order goals and penalties
+    Model.Goals.Sort();
+    Model.Goals.Reverse();
+    Model.Penalties.Sort();
+    Model.Penalties.Reverse();
+
+    // group goals / penalties now to minimize duplicate queries later
+    var goals1 = Model.Goals.Where(gl => gl.GameId == Model.GameId && gl.Period == 1);
+    var goals2 = Model.Goals.Where(gl => gl.GameId == Model.GameId && gl.Period == 2);
+    var goals3 = Model.Goals.Where(gl => gl.GameId == Model.GameId && gl.Period == 3);
+
+    var penalties1 = Model.Penalties.Where(pn => pn.Period == 1);
+    var penalties2 = Model.Penalties.Where(pn => pn.Period == 2);
+    var penalties3 = Model.Penalties.Where(pn => pn.Period == 3);
+    var penaltiesOt = Model.Penalties.Where(pn => pn.Period > 3);
+}
+<!-- #endregion -->
+
+<!-- #region Admin -->
+@if (level > 0 && !Model.Forfeit)
+{
+    <div class="toolbar">
+        <h4 class="title">@(level == 3 ? "Scorekeeping" : "Manger Tools")</h4>
+        @if (level == 3)
+        {
+            <button name="goal-form" type="button" class="open-modal confirm" data-modal-title="Add Goal">Add Goal</button>
+            <button name="penalty-form" type="button" class="open-modal confirm" data-modal-title="Add Penalty">Add Penalty</button>
+        }
+
+        <button name="roster-form" type="button" class="open-modal confirm" data-modal-title="Edit Rosters">@(level == 3 ? "Edit Rosters" : "Edit Roster")</button>
+        
+        @if (level == 3)
+        {
+            if (Model.Goals.Count(g => g.TeamId == Model.HomeId) == Model.Goals.Count(g => g.TeamId == Model.AwayId))
+            {
+                <button name="shootout-form" class="open-modal confirm" data-modal-title="Shootout Mode">Shootout Mode</button>
+            }
+
+            if (Model.Completed)
+            {
+                <a class="button caution" href="/game/@Model.GameId/status?status=false">Mark Game as Incomplete</a>
+            }
+
+            else
+            {
+                <a class="button confirm" href="/game/@Model.GameId/status?status=true">Mark Game as Complete</a>
+            }
+        }
+
+    </div>   
+    @Html.Partial("/Goal/GoalForm.cshtml")
+    @Html.Partial("/Penalty/PenaltyForm.cshtml")
+    @Html.Partial("/GameRoster/RosterForm.cshtml", Model.Players)
+    @Html.Partial("/Shootout/ShootoutForm.cshtml", Model.Shootouts)
+    @section Scripts
+            {
+        <script src="/js/admin.js"></script>
+        <script>
+
+                    var homeOptions = "@Html.Raw(Model.GetPlayersForTeam(true))";
+                    var awayOptions = "@Html.Raw(Model.GetPlayersForTeam(false))";
+                    var goals = @Html.Raw(Json.Encode(Model.Goals));
+                    var penalties = @Html.Raw(Json.Encode(Model.Penalties));
+                    var game = {gameId: @Model.GameId, homeId: @Model.HomeId, awayId: @Model.AwayId};
+        </script>
+    }
+    
+}
+<!-- #endregion -->
+
+<!-- #region Summary -->
+
+<h3 class="banner">Game Info</h3>
+<div>
+    <div class="half">
+        <p>@Model.Date.ToString("ddd, MMM d, yyyy") | @Model.FormattedTime</p>
+        <p>@Model.AwayName @@ @Model.HomeName</p>
+        <p>@Model.League.Name | @Model.Season.Name</p>
+        <p>@Model.League.ParentLeagueName</p>
+    </div>
+    @if (!Model.Forfeit)
+    {
+        <div class="half">
+            <table class="center">
+                <tr>
+                    <th>Team</th>
+                    <th>1st</th>
+                    <th>2nd</th>
+                    <th>3rd</th>
+                    @if (Model.Overtime)
+                    {
+                        <th>OT</th>
+                    }
+
+                    @if (Model.Shootout)
+                    {
+                        <th>SO</th>
+                    }
+                    <th>Final</th>
+                </tr>
+                <tr>
+                    <td>@Model.Away.Abbreviation</td>
+                    <td>@Model.GetScoreByPeriod(1, false)</td>
+                    <td>@Model.GetScoreByPeriod(2, false)</td>
+                    <td>@Model.GetScoreByPeriod(3, false)</td>
+                    @if (Model.Overtime)
+                    {
+                        <td>@Model.Goals.Count(g => g.TeamId == Model.AwayId && g.Period >= 4)</td>
+                    }
+
+                    @if (Model.Shootout)
+                    {
+                        <td>@Model.Shootouts.Count(s => s.TeamId == Model.AwayId && s.Scored)/@Model.Shootouts.Count(s => s.TeamId == Model.AwayId)</td>
+                    }
+                    <td>@Model.AwayScore</td>
+                </tr>
+                <tr>
+                    <td>@Model.Home.Abbreviation</td>
+                    <td>@Model.GetScoreByPeriod(1, true)</td>
+                    <td>@Model.GetScoreByPeriod(2, true)</td>
+                    <td>@Model.GetScoreByPeriod(3, true)</td>
+                    @if (Model.Overtime)
+                    {
+                        <td>@Model.Goals.Count(g => g.TeamId == Model.HomeId && g.Period >= 4)</td>
+                    }
+
+                    @if (Model.Shootout)
+                    {
+                        <td>@Model.Shootouts.Count(s => s.TeamId == Model.HomeId && s.Scored)/@Model.Shootouts.Count(s => s.TeamId == Model.HomeId)</td>
+                    }
+                    <td>@Model.HomeScore</td>
+                </tr>
+            </table>
+        </div>
+    }
+
+    else {
+        <div class="half">
+            <table class="center">
+                <tr>
+                    <th>Team</th>
+                    <th>Result</th>
+                </tr>
+                <tr>
+                    <td>@Model.AwayName</td>
+                    <td class="@(Model.AwayForfeit ? "dim": "highlight")">@(Model.AwayForfeit ? "Forfeit Loss" : "Forfeit Win")</td>
+                </tr>
+                <tr>
+                    <td>@Model.HomeName</td>
+                    <td class="@(Model.HomeForfeit ? "dim": "highlight")">@(Model.HomeForfeit ? "Forfeit Loss" : "Forfeit Win")</td>
+                </tr>
+            </table>
+        </div>
+        <h3 class="banner">Notes</h3>
+        <p>@Model.Notes</p>
+    }
+</div>
+<!-- #endregion -->
+
+<!--#region Scoring-->
+@if (!Model.Forfeit)
+{
+    <h3 class="banner">Scoring Summary</h3>
+    <h4 class="banner">1st Period</h4>
+
+        if (goals1.Count() > 0)
+        {
+            <div class="list">
+            @foreach (var goal in goals1)
+            {
+                Model.GetGoalDetails(goal);
+                Html.RenderPartial("/Goal/GoalHtml.cshtml", goal);
+            }
+            </div>
+        }
+
+        else { <p class="center"><em>No scoring.</em></p> }
+
+    <h4 class="banner">2nd Period</h4>
+
+    if (goals2.Count() > 0)
+    {
+        <div class="list">
+            @foreach (var goal in goals2)
+            {
+                Model.GetGoalDetails(goal);
+                Html.RenderPartial("/Goal/GoalHtml.cshtml", goal);
+            }
+        </div>
+    }
+
+    else { <p class="center"><em>No scoring.</em></p> }
+
+    <h4 class="banner">3rd Period</h4>
+
+    if (goals3.Count() > 0)
+    {
+        <div class="list">
+            @foreach (var goal in goals3)
+            {
+                Model.GetGoalDetails(goal);
+                Html.RenderPartial("/Goal/GoalHtml.cshtml", goal);
+            }
+        </div>
+    }
+
+    else { <p class="center"><em>No scoring.</em></p> }
+
+    if (Model.Overtime)
+    {
+        <h4 class="banner">Overtime</h4>
+        foreach (var goal in Model.Goals.Where(gl => gl.Period > 3))
+        {
+            Model.GetGoalDetails(goal);
+            Html.Partial("/Goal/GoalHtml.cshtml", goal);
+        }
+    }
+
+    if (Model.Shootout)
+    {
+        <h4 class="banner">Shootout</h4>
+        @Html.Partial("/Shootout/ShootoutList.cshtml", Model.Shootouts)
+    }
+    <!-- #endregion -->
+
+<!-- #region Penalties -->
+    <h3 class="banner">Penalty Summary</h3>
+    <h4 class="banner">1st Period</h4>
+
+        if (penalties1.Count() > 0)
+        {
+            <div class="list">
+                @foreach (var penalty in penalties1)
+                {
+                    Model.GetPenaltyDetails(penalty);
+                    Html.RenderPartial("/Penalty/PenaltyHtml.cshtml", penalty);
+                }
+            </div>
+        }
+
+        else { <p class="center"><em>No penalties.</em></p> }
+            
+    <h4 class="banner">2nd Period</h4>
+
+    if (penalties2.Count() > 0)
+    {
+        <div class="list">
+            @foreach (var penalty in penalties2)
+            {
+                Model.GetPenaltyDetails(penalty);
+                Html.RenderPartial("/Penalty/PenaltyHtml.cshtml", penalty);
+            }
+        </div>
+    }
+
+    else { <p class="center"><em>No penalties.</em></p> }
+
+    <h4 class="banner">3rd Period</h4>
+
+    if (penalties3.Count() > 0)
+    {
+        <div class="list">
+            @foreach (var penalty in penalties3)
+            {
+                Model.GetPenaltyDetails(penalty);
+                Html.RenderPartial("/Penalty/PenaltyHtml.cshtml", penalty);
+            }
+        </div>
+    }
+
+    else { <p class="center"><em>No penalties.</em></p> }
+
+
+    if (Model.Overtime)
+    {
+        <h4 class="banner">Overtime</h4>
+        if (penaltiesOt.Count() > 0)
+        {
+            <div class="list">
+                @foreach (var penalty in penaltiesOt)
+                {
+                    Model.GetPenaltyDetails(penalty);
+                    Html.RenderPartial("/Penalty/PenaltyHtml.cshtml", penalty);
+                }
+            </div>
+        }
+
+        else { <p class="center"><em>No penalties.</em></p> }
+    }
+    <!-- #endregion -->
+
+<!-- #region Rosters -->
+{ 
+    // calculate stats here so they don't interfere with RosterForm in admin area.
+    Model.CalculateStats();
+}
+<h3 class="banner">Rosters</h3>
+<div class="half">
+    @Html.Partial("/GameRoster/RosterList.cshtml", false)
+</div>
+<div class="half">
+    @Html.Partial("/GameRoster/RosterList.cshtml", true)
+</div>
+
+} <!-- end if forfeit block -->
+<!-- #endregion -->

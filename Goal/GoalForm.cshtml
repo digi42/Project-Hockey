@@ -1,0 +1,61 @@
+﻿@{
+    Layout = "/Shared/_Modal.cshtml";
+    var game = ViewBag.Game as PH.Game.Model;
+    var level = game.AccessLevel;
+}
+
+<form id="goal-form" action="/goal/save" method="post">
+    <input type="hidden" class="volatile" name="GoalId" />
+    <input type="hidden" name="GameId" value="@game.GameId"/>
+    <input type="hidden" class="volatile" name="TeamId" />
+    <fieldset style="@(level < 3 ? "display:none;" : "")">
+        <legend>Team</legend>
+        <div class="field">
+            <label class="radio-option team-select away" data-team-id="@game.AwayId">@game.AwayName</label>
+        </div>
+        <div class="field">
+            <label class="radio-option team-select home" data-team-id="@game.HomeId">@game.HomeName</label>
+        </div>
+    </fieldset>
+    <div class="rest-of-form">
+        <fieldset>
+            <legend>Goal</legend>
+            <div class="field x-short">
+                <label>Period</label>
+                <input type="number" name="Period" min="1" max="10" required @(level < 3 ? "readonly" : "")/>
+            </div>
+            <div class="field short">
+                <input type="hidden" name="Time" />
+                <label>Time</label>
+                <input type="number" name="t" required min="0" max="3000" @(level < 3 ? "readonly" : "")/>
+            </div>
+            <br />
+            <div class="field medium">
+                <label>Scorer</label>
+                <select class="player-select" name="Scorer"></select>
+            </div>
+            <div class="field medium">
+                <label>Assist</label>
+                <select class="player-select" name="PrimaryAssist"></select>
+            </div>
+            <div class="field medium">
+                <label>Assist</label>
+                <select class="player-select" name="SecondaryAssist"></select>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Special Goal Type</legend>
+            <div class="field">
+                <input type="radio" name="SpecialType" value="" checked /><label>None</label>
+                <input type="radio" name="SpecialType" value="0" /><label>Empty Net</label>
+            </div>
+            <div class="field">
+                <input type="radio" name="SpecialType" value="1" /><label>Extra Attacker</label>
+                <input type="radio" name="SpecialType" value="2" /><label>Penalty Shot</label>
+            </div>
+        </fieldset>
+        <fieldset class="center">
+            <button class="confirm">Save Goal</button>
+        </fieldset>
+    </div>
+</form>

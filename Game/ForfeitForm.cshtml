@@ -1,0 +1,29 @@
+﻿@{
+    Layout = "/Shared/_Modal.cshtml";
+    var teams = ViewBag.League.Teams as List<PH.Team.Model>;
+}
+
+<form id="forfeit-form" action="/game/forfeit" method="post" class="ajax">
+    <input type="hidden" class="volatile" name="gameId" />
+    <input type="hidden" name="forfeit" value="true"/>
+    <h3>Which team(s) forfeited?</h3>
+    <div class="field">
+        <input type="checkbox" id="away-forfeit" name="away" value="true"/>
+        <label class="elip" for="away-forfeit"></label>
+    </div>
+    <div class="field">
+        <input type="checkbox" id="home-forfeit" name="home"  value="true"/>
+        <label class="elip" for="home-forfeit"></label>
+    </div>
+    <div class="field full">
+        <label>Forfeit Reason (Optional)</label>
+        <input type="text" name="notes" maxlength="256" />
+    </div>
+    <fieldset class="center">
+        <button class="confirm">Save Forfeit</button>
+    </fieldset>
+    @foreach (var t in teams)
+    {
+        <input type="hidden" data-id="@t.TeamId" data-name="@t.Name"/>
+    }
+</form>

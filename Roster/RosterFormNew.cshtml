@@ -1,0 +1,53 @@
+﻿@model List<PH.Player.ViewModel>
+
+@{
+    int level = ViewBag.Level ?? 0;
+    Layout = "/Shared/_Modal.cshtml";
+    var vm = ViewBag.Game as PH.Game.ViewModel;
+    var c = 1;
+}
+
+<form id="roster-form">
+    <input type="hidden" name="gameId" value="@vm.Game.GameId" />
+    <input type="hidden" name="awayId" value="@vm.Game.AwayId" />
+    <input type="hidden" name="homeId" value="@vm.Game.HomeId" />
+    <input type="hidden" name="awayPlayers" />
+    <input type="hidden" name="homePlayers" />
+    <input type="hidden" name="current" value="@string.Join(",", vm.Rosters.Select(r => r.PlayerId))"/>
+
+    <div class="switch"><span class="active">@vm.Away.Name</span><span>@vm.Home.Name</span></div>
+    <div class="panel-1">
+        <fieldset>
+            <legend>Roster</legend>
+            <p>Check all players that are present at this game.</p>
+            <table>
+                <tr>
+                    <th></th>
+                    <th>Actions</th>
+                    <th>#</th>
+                    <th>Player</th>
+                </tr>
+                @foreach (var p in Model.Where(r => r.TeamId == vm.Game.AwayId && !r.Sub))
+                {
+                    <tr class="@(p.Active ? "": "dim")">
+                        <td class="dim">@c</td>
+                        <td>@(p.Active ? "<img src='/img/icons/number.svg' class='change-number' title='Temporary number change.'/><img src=/img/icons/trash.svg' class='delete-rsoter' title='Remove from roster.'/>": "<img src='/img/icons/add.svg' class='add-roster' title='Add to roster.' />")</td>
+                        <td>@p.Number</td>
+                        <td>@p.Name</td>
+                    </tr>
+
+                    c++;
+                }
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend>Subs</legend>
+        </fieldset>
+    </div>
+    <div class="panel-2">
+
+    </div>
+    <fieldset class="center">
+        <button class="confirm">@(level == 3 ? "Save Rosters" : "Save Roster")</button>
+    </fieldset>
+</form>

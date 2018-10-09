@@ -1,0 +1,17 @@
+﻿@model List<PH.Shootout.Model>
+
+@{ 
+    var game = ViewBag.Game as PH.Game.Model;
+}
+
+<div class="list">
+    @foreach (var s in Model)
+    {
+    var home = s.TeamId == game.HomeId;
+    <div class="row @(home ? "dim":"")">
+        <div class="cell">@(home ? game.Home.Abbreviation : game.Away.Abbreviation)</div>
+        <div class="cell">@game.PlayerName(s.PlayerId)</div>
+        <div class="cell"> - <em>@(s.Scored ? "Goal" : "Miss")</em></div>
+    </div>
+    }
+</div>

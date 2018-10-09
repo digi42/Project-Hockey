@@ -1,0 +1,28 @@
+﻿@{
+    Layout = "/Shared/_Modal.cshtml";
+    var game = ViewBag.Game as PH.Game.Model;
+    var level = game.AccessLevel;
+}
+
+<form id="roster-form">
+    <p class="center">Select all players that are present for this game.</p>
+    <div class="field @(level == 1 && level != 3  ? "full" : (level == 3 ? "" : "hidden")) check-list">
+        <p class="team-name"><input style="float:left;" type="checkbox" class="all"/>@game.AwayName</p>
+        @foreach (var p in game.Players.Where(p => p.TeamId == game.AwayId).OrderByDescending(p => p.Number.HasValue).ThenBy(p => p.Number))
+        {
+            <input type="checkbox" value="@p.PlayerId" data-num="@p.Number" @(game.Rosters.Any(r => r.PlayerId == p.PlayerId) ? "checked" : "") />
+            <label>@p.NameWithNumber</label>
+        }
+    </div>
+    <div class="field @(level == 2 ? "full" : (level == 3 ? "" : "hidden")) check-list">
+        <p class="team-name"><input style="float:left;" type="checkbox" class="all" />@game.HomeName</p>
+        @foreach (var p in game.Players.Where(p => p.TeamId == game.HomeId).OrderByDescending(p => p.Number.HasValue).ThenBy(p => p.Number))
+        {
+            <input type="checkbox" value="@p.PlayerId" data-num="@p.Number" @(game.Rosters.Any(r => r.PlayerId == p.PlayerId) ? "checked" : "") />
+            <label>@p.NameWithNumber</label>
+        }
+    </div>    
+    <fieldset class="center">
+        <button class="confirm" type="button">@(level == 3 ? "Save Rosters" : "Save Roster")</button>
+    </fieldset>
+</form>

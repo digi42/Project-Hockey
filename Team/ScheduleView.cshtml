@@ -1,0 +1,43 @@
+﻿@model PH.Team.Model
+
+@{ 
+    ViewBag.Current = 3;
+    int count = 0;
+}
+
+<div class="toggler button">Add Schedule to My Calendar</div>
+<div class="collapsable">
+    <p>Add the URL below to your calendar program of choice:</p>
+    <input style="width:320px;" type="text" readonly value="https://project.hockey/team/@Model.TeamId/ical" />
+</div>
+
+<div class="scroll">
+    <table>
+        <tr>
+            <th></th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Opponent</th>
+            <th>Result</th>
+            <th>Location</th>
+            <th>Description</th>
+        </tr>
+        <tbody>
+            @foreach (var game in Model.Games.OrderBy(gm => gm))
+            {
+                bool home = game.HomeId == Model.TeamId;
+                count = count + 1;
+                <tr class="@(game.Completed ? "dim":"")">
+                    <td class="center">@count</td>
+                    <td>@game.Date.ToString("ddd, M/d/yy")</td>
+                    <td>@game.FormattedTime</td>
+                    <td>@(home ? game.AwayName : "@ " + game.HomeName)</td>
+                    <td><a style="text-decoration:underline;" href="/game/@game.GameId/boxscore">@game.Result(home)</a></td>
+                    <td>@game.Location</td>
+                    <td>@game.GetDescription()</td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>

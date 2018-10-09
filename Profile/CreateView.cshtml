@@ -1,0 +1,35 @@
+﻿@{ 
+    Layout = "/Shared/_Master.cshtml";
+    ViewBag.Title = "Create New Profile";
+}
+
+<h1>Create Profile</h1>
+<form method="post">
+    <fieldset>
+        <label for="firstName">First Name</label>
+        <input type="text" name="firstName"  tabindex="1" required autofocus/>
+    </fieldset>
+    <fieldset>
+        <label for="lastName">Last Name</label>
+        <input type="text" name="lastName" tabindex="2" required/>
+    </fieldset>
+    <fieldset>
+        <label for="email">Email</label>
+        <input type="email" name="email" tabindex="3" required/>
+    </fieldset>
+    <fieldset>
+        <label for="password">Password</label>
+        <input type="password" name="password" tabindex="4" required />
+        <span class="instructions">Minimum 8 characters.</span>
+    </fieldset>
+    <fieldset>
+        <label for="confirm">Confirm Password</label>
+        <input type="password" name="confirm" tabindex="5" required/>
+    </fieldset>
+    <fieldset>
+        <button class="fill" type="submit" tabindex="6">Create Profile</button>
+    </fieldset>
+    <fieldset class="center">
+        <a href="/profile/sign-in">Return to Sign In Page</a>
+    </fieldset>
+</form>

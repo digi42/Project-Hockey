@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" type="image/png" href="/img/project-hockey-favicon.png">
+
+    @if (ViewBag.FullTitle != null)
+    {
+        <title>@ViewBag.FullTitle</title>
+    }
+
+    else
+    {
+        <title>@ViewBag.Title | Project Hockey</title>
+    }
+
+    <link href="https://fonts.googleapis.com/css?family=Droid+Sans:400,700|Coda|Droid+Sans+Mono" rel="stylesheet" type="text/css">
+    <link href="/css/style.css?v=11" rel="stylesheet">
+    
+    <script>
+      (function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,"script","//www.google-analytics.com/analytics.js","ga");
+
+      ga("create", "UA-43518909-3", "auto");
+      ga("send", "pageview");
+    </script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/js/mask.js"></script>
+    <script src="/js/script.js?v=8"></script>
+    @RenderSection("Scripts", false)
+</head>
+<body class="@ViewBag.Class">
+    <header id="header">
+        @Html.Partial("/Shared/MainMenu.cshtml")
+        @RenderSection("Header", false)
+    </header>
+    <main>
+        @Html.Partial("MobileHeader")
+        <section class="content">
+            <div class="ad">
+                @Html.Partial("/Shared/Ad.cshtml")
+            </div>
+            <div class="dynamic">
+                @if (TempData["Error"] != null)
+                {
+                    <div class="error">@TempData["Error"]</div>
+                }
+
+                @if (TempData["Success"] != null)
+                {
+                    <div class="success">@TempData["Success"]</div>
+                }
+                @RenderBody()
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p style="margin-bottom:24px;">support@project.hockey</p>
+        <p>Copyright &copy;@DateTime.Now.Year Project Hockey</p>
+    </footer>
+</body>
+</html>

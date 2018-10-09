@@ -1,0 +1,35 @@
+﻿@model bool
+
+@{ 
+    var game = ViewBag.Game as PH.Game.Model;
+    var players = game.Rosters.Where(rs => rs.TeamId == (Model ? game.HomeId : game.AwayId));
+}
+
+<h4 class="banner">@(Model ? game.Home.Name : game.Away.Name)</h4>
+<div class="scroll">
+    <table class="center">
+        <thead>
+            <tr>
+                <th class="x-short">#</th>
+                <th>Player</th>
+                <th>G</th>
+                <th>A</th>
+                <th class="highlight">P</th>
+                <th>PIM</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in players.OrderByDescending(p => p.Points).ThenByDescending(p => p.Goals).ThenBy(p => p.Pim).ThenByDescending(p => p.Number.HasValue).ThenBy(p => p.Number))
+            {
+                <tr>
+                    <td>@p.Number</td>
+                    <td class="left">@p.Name</td>
+                    <td>@p.Goals</td>
+                    <td>@p.Assists</td>
+                    <td class="highlight">@p.Points</td>
+                    <td>@p.Pim</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

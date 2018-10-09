@@ -1,0 +1,19 @@
+﻿@model List<PH.Game.Model>
+
+@{ 
+    ViewBag.Title = "Today's Games";
+    ViewBag.Current = 1;
+}
+
+<h1>Today's Games</h1>
+
+@foreach (var gm in Model)
+{
+    <a class="link-box" href="/game/@gm.GameId/boxscore">
+        <p>@gm.FormattedTime | @gm.Location</p>
+        <p class="large-text">@gm.HomeName</p>
+        <p class="large-text">@@ @gm.AwayName</p>
+        <p>@gm.GetDescription()</p>
+        @*<p>@gm.Status</p>*@
+    </a>
+}

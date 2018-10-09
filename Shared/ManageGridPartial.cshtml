@@ -1,0 +1,46 @@
+﻿@model PH.Shared.ManageViewModel
+
+<div class="grid">
+    @foreach (var role in Model.Roles)
+    {
+        int id = role.ObjectId;
+        <div class="item">
+            <div class="object">@role.ObjectName</div>
+            <div class="action-toggle"><img src="/img/icons/menu.svg" /><span>Actions</span></div>
+            <div class="actions">
+                @switch (Model.ObjectType)
+                {
+                    case 0:
+                        <a href="/league/@id/view"><img src="/img/icons/eye.svg" />View League</a>
+                        <a href="/league/@id/manage-leagues"><img src="/img/icons/list.svg" />Manage Subleagues</a>
+                        <a href="/league/@id/edit"><img src="/img/icons/pencil.svg" />Edit League</a>
+                        <a href="/league/@id/permissions"><img src="/img/icons/shield.svg" />Manage Permissions</a>
+                        <a href="/league/@id/archive"><img src="/img/icons/archive.svg" />Archive</a>
+                        break;
+
+                    case 1:
+                        <a href="/league/@id/view"><img src="/img/icons/eye.svg" />View League</a>
+                        <a href="/league/@id/manage-teams"><img src="/img/icons/sticks.svg" />Manage Teams</a>
+                        <a href="/league/@id/manage-schedule"><img src="/img/icons/calendar.svg" />Manage Schedule</a>
+                        if (Model.PermissionLevel <= 1)
+                        {
+                            <a href="/league/@id/manage-seasons"><img src="/img/icons/list.svg" />Manage Seasons</a>
+                            <a href="/league/@id/edit"><img src="/img/icons/pencil.svg" />Edit League</a>
+                            <a href="/league/@id/permissions"><img src="/img/icons/shield.svg" />Manage Permissions</a>
+                        }
+                        break;
+
+                    case 2:
+                        <a href="/team/@id/view"><img src="/img/icons/eye.svg" />View Team</a>
+                        <a href="/team/@id/manage-roster"><img src="/img/icons/people.svg" />Manage Roster</a>
+                        <a href="/team/@id/edit"><img src="/img/icons/pencil.svg" />Edit Team</a>
+                        if (Model.PermissionLevel <= 1)
+                        {
+                            <a href="/team/@id/permissions"><img src="/img/icons/shield.svg" />Manage Permissions</a>
+                        }
+                        break;
+                }
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,14 @@
+﻿@model PH.Player.Model
+
+@{
+    ViewBag.Title = "Add Player";
+}
+
+<h1>Add Player</h1>
+<p>To prevent duplicates, please search to see if player exists already before creating a new one.</p>
+@Html.Partial("FindPlayer")
+@Html.Partial("PlayerInstanceForm", Model)
+
+<div class="modal">
+    @Html.Partial("PlayerForm", Model)
+</div>

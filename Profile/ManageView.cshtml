@@ -1,0 +1,17 @@
+﻿@model List<PH.Permission.ViewModel>
+
+@{ 
+    ViewBag.Current = 0;
+}
+
+@foreach (var p in Model)
+{
+    <div class="link-box">
+        <p>@p.ObjectName | @p.Role</p>
+        <p>@p.ParentName</p>
+        @if (p.Type == 3)
+        {
+            <a href="/team/@p.ObjectId/roster">Manage Roster</a>
+        }
+    </div>
+}

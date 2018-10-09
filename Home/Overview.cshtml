@@ -1,0 +1,25 @@
+﻿@model List<PH.Game.Model>
+
+@{ 
+    ViewBag.FullTitle = "Project Hockey | Free League Management Software for Hockey";
+}
+
+<h1>Today's Games</h1>
+@if (Model.Count > 0)
+{
+    foreach (var gm in Model.OrderBy(g => g))
+    {
+        <a class="box" href="/game/@gm.GameId/boxscore">
+            <p class="trim elip">@gm.FormattedTime | @gm.Location</p>
+            <p class="@(gm.Completed ? (gm.AwayScore > gm.HomeScore ? "highlight": "dim") : "")"><span class="name elip">@gm.AwayName</span><span class="score">@(gm.InProgress ? gm.AwayScore.ToString() : "")</span></p>
+            <p class="@(gm.Completed ? (gm.HomeScore > gm.AwayScore ? "highlight": "dim") : "")"><span class="name elip">@@ @gm.HomeName</span><span class="score">@(gm.InProgress ? gm.HomeScore.ToString() : "")</span></p>
+            <p><em>@gm.Status</em></p>
+            <p class="trim elip">@gm.League.FullName</p>
+        </a>
+    }
+}
+
+else
+{
+    <h3><em>No games scheduled for today.</em></h3>
+}

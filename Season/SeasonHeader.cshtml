@@ -1,0 +1,51 @@
+﻿@{
+    var l = ViewBag.League as PH.League.ViewModel;
+    var id = l.LeagueId;
+}
+
+<section class="league-header">
+    @if (l.Logo != null)
+    {
+        <img class="logo" src="/img/logos/@l.Logo" />
+    }
+    <div class="info">
+        <h2>@l.Name</h2>
+        @if (l.ParentLeagueId != null)
+        {
+            <h3>@l.ParentLeagueName</h3>
+        }
+    </div>
+</section>
+
+<nav class="league-menu">
+    <section>
+
+        <ul>
+
+            <li><a href="/league/@id/scores">Scores</a></li>
+            <li><a href="/league/@id/standings">Standings</a></li>
+            <li><a href="/league/@id/schedule">Schedule</a></li>
+            <li><a href="/league/@id/stats">Stats</a></li>
+            @if (l.Rules != null)
+            {
+                            <li><a href="/doc/@l.Rules" target="_blank">Rules</a></li>
+            }
+
+            @if (l.Contact != null)
+            {
+                            <li><a href="/league/@id/contact">Contact</a></li>
+            }
+            <li>
+                <a href="/league/@id/teams">Teams</a>
+                <ul>
+                    @foreach (var t in l.Teams.OrderBy(t => t.Name))
+                    {
+                        <li><a href="/team/@t.TeamId/roster/@l.CurrentSeason">@t.Name</a></li>
+                    }
+                </ul>
+            </li>   
+
+        </ul>
+    </section>
+</nav>
+

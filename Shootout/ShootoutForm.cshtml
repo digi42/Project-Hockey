@@ -1,0 +1,68 @@
+﻿@model List<PH.Shootout.Model>
+
+@{
+    Layout = "/Shared/_Modal.cshtml";
+    var game = ViewBag.Game as PH.Game.Model;
+    var c = 1;
+}
+
+<form id="shootout-form">
+    <input name="gameId" type="hidden" value="@game.GameId" />
+    <div class="field away center" data-abbr="@game.Away.Abbreviation">
+        <div class="elip">@game.Away.Name</div>
+        <div class="score">@Model.Count(s => s.TeamId == game.AwayId && s.Scored)</div>
+    </div>
+    <div class="field home center" data-abbr="@game.Home.Abbreviation">
+        <div class="elip">@game.Home.Name</div>
+        <div class="score">@Model.Count(s => s.TeamId == game.HomeId && s.Scored)</div>
+    </div>
+    <table>
+        <tr>
+            <th></th>
+            <th>Team</th>
+            <th style="width:192px;">Player</th>
+            <th>Result</th>
+            <th></th>
+        </tr>
+        @foreach (var s in Model.OrderBy(s => s.ShotOrder))
+        {
+            var data = string.Format("{{\"ShootoutId\": \"{0}\", \"GameId\": \"{1}\", \"TeamId\": \"{2}\", \"PlayerId\": \"{3}\", \"ShotOrder\": \"{4}\", \"Scored\": \"{5}\"}}", s.ShootoutId, s.GameId, s.TeamId, s.PlayerId, s.ShotOrder, s.Scored);
+            <tr data="@data">
+                <td>@c</td>
+                <td>@(s.TeamId == game.HomeId ? game.Home.Abbreviation : game.Away.Abbreviation)</td>
+                <td>@game.PlayerName(s.PlayerId)</td>
+                <td>@(s.Scored ? "Goal" : "Miss")</td>
+                <td>
+                    @if (c == Model.Count)
+                    {
+                        <img src="/img/icons/trash.svg" title="Delete" class="icon delete-shootout"/>
+                    }
+                </td>
+            </tr>
+            c++;
+        }
+        <tr class="adder-row">
+            <td></td>
+            <td>
+                <select class="team-select null-default">
+                    <option class="away" value="@game.AwayId">@game.Away.Abbreviation</option>
+                    <option class="home" value="@game.HomeId">@game.Home.Abbreviation</option>
+                </select>
+            </td>
+            <td><select class="player-select"></select></td>
+            <td>
+                <select class="result-select null-default">
+                    <option value="false">Miss</option>
+                    <option value="true">Goal</option>
+                </select>
+            </td>
+            <td>
+                <img class="icon add-shootout" title="Add" src="/img/icons/add.svg" />
+            </td>
+        </tr>
+    </table>    
+    <fieldset class="push-down">
+        <legend>Save</legend>
+        <button type="button" class="save-shootout confirm fill">Save Shootout</button>
+    </fieldset>
+</form>

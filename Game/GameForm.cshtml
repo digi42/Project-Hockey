@@ -1,0 +1,67 @@
+﻿@{
+    Layout = "/Shared/_Modal.cshtml";
+    var league = ViewBag.League as PH.League.Model;
+    var options = "<option class='italic'><To Be Determined></option>";
+
+    foreach (var team in league.Teams.OrderBy(t => t.Name))
+    {
+        options += string.Format("<option value='{0}'>{1}</option>", team.TeamId, team.Name);
+    }
+}
+
+<form id="game-form" action="/game/save" method="post" class="ajax">
+    <input type="hidden" class="volatile" name="GameId" />
+    <input type="hidden" name="SeasonId" value="@ViewBag.League.CurrentSeason" />
+    <div class="field">
+        <label>Date</label>
+        <input type="date" name="Date"/>
+    </div>
+    <div class="field">
+        <label>Time</label>
+        <input type="time" name="Time"/>
+    </div>
+    <div class="field">
+        <label>Arena</label>
+        <select name="RinkId">
+            <option></option>
+            @foreach (var rink in league.Rinks.OrderBy(r => r.Name))
+            {
+                <option value="@rink.RinkId">@rink.Name</option>
+            }
+        </select>
+    </div>
+    <div class="field hidden">
+        <label>Surface</label>
+        <select name="SurfaceId">
+        </select>
+    </div>
+    <div class="field">
+        <label>Game Type</label>
+        <select name="GameType">
+            <option value="0">Regular Season</option>
+            <option value="1">Scrimmage</option>
+            <option value="2">Playoff</option>
+            <option value="3">Schedule Only</option>
+        </select>
+    </div>
+    <br/>
+    <div class="field">
+        <label>Home Team</label>
+        <select name="HomeId">
+            @Html.Raw(options);
+        </select>
+    </div>
+    <div class="field">
+        <label>Away Team</label>
+        <select name="AwayId">
+            @Html.Raw(options);
+        </select>
+    </div>
+    <div class="field full">
+        <label>Description (Optional)</label>
+        <input type="text" name="Description" maxlength="50" />
+    </div>
+    <fieldset class="center">
+        <button class="confirm">Save Game</button>
+    </fieldset>
+</form>

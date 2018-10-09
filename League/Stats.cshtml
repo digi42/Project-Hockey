@@ -1,0 +1,53 @@
+﻿@model PH.League.Model
+
+@{
+    int c = 0;
+    ViewBag.Title = "Scoring Leaders | " + Model.FullName + " | " + Model.Season.Name;
+}
+
+<h1>Player Stats | @Model.Season.Name</h1>
+
+<div class="dropdown">
+    <label>Season: </label>
+    <select class="dropdown" onchange="location = this.value;">
+        @foreach (var s in Model.Seasons.OrderByDescending(s => s))
+            {
+            <option value="/league/@Model.LeagueId/stats/@s.SeasonId" @(s.SeasonId == Model.Season.SeasonId ? "selected" : "")>@s.Name</option>
+        }
+    </select>
+</div>
+
+<div class="scroll">
+    <table class="center grid">
+        <tr>
+            <th>Rank</th>
+            <th>Team</th>
+            <th>#</th>
+            <th>Player</th>
+            <th>GP</th>
+            <th>G</th>
+            <th>A</th>
+            <th class="highlight">P</th>
+            <th>PPG</th>
+            <th>PIM</th>
+        </tr>
+        @foreach (var pl in Model.Players.OrderByDescending(pl => pl.Points).ThenByDescending(pl => pl.Goals).ThenBy(pl => pl.GamesPlayed).ThenBy(pl => pl.Pim))
+        {
+            c++;
+            var tm = Model.Teams.FirstOrDefault(t => t.TeamId == pl.TeamId);
+            <tr>
+                <td class="dim">@c</td>
+                <td>@(tm != null ? tm.Abbreviation : "<N/A>")</td>
+                <td>@pl.Number</td>
+                <td class="left">@pl.Name</td>
+                <td>@pl.GamesPlayed</td>
+                <td>@pl.Goals</td>
+                <td>@pl.Assists</td>
+                <td class="highlight">@pl.Points</td>
+                <td>@pl.Ppg</td>
+                <td>@pl.Pim</td>
+            </tr>
+            if (c == 25) { break; }
+        }
+    </table>
+</div>

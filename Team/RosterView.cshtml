@@ -1,0 +1,91 @@
+﻿@model PH.Team.Model
+
+@{ 
+    int count = 0;
+    ViewBag.Title = "Roster | " + Model.Name;
+    ViewBag.Current = 1;
+    int level = ViewBag.Level;
+    var league = ViewBag.League as PH.League.Model;
+}
+
+@if (level >= 1)
+{
+    <div class="toolbar">
+        <h4 class="title">Manager Tools</h4>
+        @if (ViewBag.Level == 1 && league.Season.RosterLockDate > DateTime.Now)
+        {
+
+            <button name="player-instance" type="button" class="open-modal confirm" data-modal-title="Add Player To Roster">Add Player To Roster</button>
+        }
+        else if (level >= 2)
+        {
+            <button name="player-instance" type="button" class="open-modal confirm" data-modal-title="Add Player To Roster">Add Player To Roster</button>
+            <button name="permission-form" type="button" class="open-modal confirm" data-modal-title="Manage Permissions">Manage Permissions</button>
+        }
+        else
+        {
+            <p>Roster editing is closed for the season.</p>
+        }
+    </div>
+}
+
+<div class="scroll-table">
+    <table>
+        <thead>
+            <tr>
+                @if (level >= 1)
+                {
+                    <th class="x-short">Edit</th>
+                }
+                <th class="x-short"></th>
+                <th class="x-short">#</th>
+                <th>Player</th>
+                <th>Position</th>
+                @*<th>Shoots</th>
+                <th>Height</th>
+                <th>Weight</th>
+                <th>Date of Birth</th>
+                <th>Age</th>
+                <th>Hometown</th>*@
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var player in Model.Players.OrderBy(p => p))
+            {
+
+                count++;
+                <tr>
+                    @if(level >= 1)
+                    {
+                        <td class="controls center">
+                            <img src="/img/icons/pencil.svg" class="edit-instance" title="Edit Roster Entry" data-id="@player.InstanceId" />
+                            <img src="/img/icons/trash.svg" class="remove-instance" title="Remove Player" data-id="@player.InstanceId" />
+                        </td>
+                    }
+                    <td class="dim center">@count</td>
+                    <td class="center">@player.Number</td>
+                    <td class="left">@player.Name</td>
+                    <td>@PH.Util.Helpers.GetPosition(player.Position ?? 0)</td>
+                    @*<td>@(player.LeftHanded == true ? "L" : player.LeftHanded == false ? "R" : "")</td>
+                    <td>@PH.Util.Helpers.GetHeight(player.Height ?? 0)</td>
+                    <td>@player.Weight</td>
+                    <td>@(player.BirthDate != null ? player.BirthDate.Value.ToString("MMM d, yyyy") : "")</td>
+                    <td>@PH.Util.Helpers.GetAge(player.BirthDate)</td>
+                    <td>@PH.Util.Helpers.GetLocation(player.HomeCity, player.HomeRegion)</td>*@
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@if (level >= 1)
+{
+    @Html.Partial("/Player/PlayerForm.cshtml")
+    @Html.Partial("/Player/FindPlayer.cshtml")
+    @Html.Partial("/Player/InstanceForm.cshtml")
+    if (level >= 2)
+    {
+        @Html.Partial("/Permission/PermissionForm.cshtml")
+    }
+    <script>var players = @Html.Raw(Json.Encode(Model.Players));</script>
+}

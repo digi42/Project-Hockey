@@ -1,0 +1,52 @@
+﻿@{
+    Layout = "/Shared/_Modal.cshtml";
+    var game = ViewBag.Game as PH.Game.Model;
+    var level = game.AccessLevel;
+}
+
+<form id="penalty-form" action="/penalty/save" method="post">
+    <input type="hidden" class="volatile" name="PenaltyId" />
+    <input type="hidden" name="GameId" value="@game.GameId"/>
+    <input type="hidden" class="volatile" name="TeamId" />
+    <fieldset style="@(level < 3 ? "display:none;" : "")">
+        <legend>Team</legend>
+        <div class="field">
+            <label class="radio-option team-select away" data-team-id="@game.AwayId">@game.AwayName</label>
+        </div>
+        <div class="field">
+            <label class="radio-option team-select home" data-team-id="@game.HomeId">@game.HomeName</label>
+        </div>
+    </fieldset>
+    <div class="rest-of-form">
+        <fieldset>
+            <div class="field short">
+                <label>Period</label>
+                <input type="number" name="Period" min="1" max="10" required @(level < 3 ? "readonly" : "")/>
+            </div>
+            <div class="field short">
+                <input type="hidden" name="Time" />
+                <label>Time</label>
+                <input type="number" name="t" min="0" max="3000" required @(level < 3 ? "readonly" : "")/>
+            </div>
+            <div class="field">
+                <label>Player</label>
+                <select class="player-select" name="Player" required></select>
+            </div>
+            <div class="field">
+                <label>Penalty Type</label>
+                <select name="PenaltyType" required class="@(level < 3 ? "readonly" : "")">
+                    @PH.Util.Helpers.GetSelectOptions(typeof(PenaltyType), false)
+                </select>
+            </div>
+            <div class="field fill">
+                <label>Offense</label>
+                <select name="Offense" class="null-default @(level < 3 ? "readonly" : "")">
+                    @PH.Util.Helpers.GetSelectOptions(typeof(OffenseType), true)
+                </select>
+            </div>
+        </fieldset>
+        <fieldset class="center">
+            <button class="confirm">Save Penalty</button>
+        </fieldset>
+    </div>
+</form>

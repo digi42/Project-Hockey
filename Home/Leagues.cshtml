@@ -1,0 +1,57 @@
+﻿@model List<PH.League.Model>
+
+@{
+    ViewBag.Title = "Find Leagues";
+    ViewBag.Class = "league-list";
+}
+
+<h1>Active Leagues</h1>
+@foreach (var l in Model.Where(l => l.ParentLeagueId == null && l.Active).OrderBy(l => l.Name))
+{
+    if (Model.Count(m => m.ParentLeagueId == l.LeagueId) > 0)
+    {
+        <div class="league toggler">
+            @if (!string.IsNullOrWhiteSpace(l.Logo))
+            {
+                <img src="/img/logos/@l.Logo" />
+            }
+            <h3>@l.Name</h3>
+        </div>
+        <div class="collapsable">
+            @foreach (var sl in Model.Where(sl => sl.ParentLeagueId == l.LeagueId && sl.Active).OrderBy(sl => sl.Name))
+            {
+                <a class="league push-right" href="/league/@sl.LeagueId/scores">@sl.Name</a>
+            }
+        </div>
+    }
+
+    /* Independent League */
+
+    else
+    {
+        <a class="league" href="/league/@l.LeagueId/scores">
+        @if (!string.IsNullOrWhiteSpace(l.Logo))
+        {
+            <img src="/img/logos/@l.Logo" />
+        }
+        <h3>@l.Name</h3></a>
+    }
+}
+
+@*<h1>Inactive Leagues</h1>
+@foreach (var l in Model.Where(l => l.ParentLeagueId == null && !l.Active).OrderBy(l => l.Name))
+{
+    <div class="league toggler">
+        @if (!string.IsNullOrWhiteSpace(l.Logo))
+        {
+            <img src="/img/logos/@l.Logo" />
+        }
+        <h3>@l.Name</h3>
+    </div>
+    <div class="collapsable">
+        @foreach (var sl in Model.Where(sl => sl.ParentLeagueId == l.LeagueId).OrderBy(sl => sl.Name))
+        {
+            <a class="subleague" href="/league/@sl.LeagueId/scores">@sl.Name</a>
+        }
+    </div>
+}*@

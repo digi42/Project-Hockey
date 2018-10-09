@@ -1,0 +1,41 @@
+﻿@model PH.Team.Model
+
+@{
+    int c = 0;
+    ViewBag.Title = "Player Stats | " + Model.Name + " | " + Model.League.Season.Name;
+    ViewBag.Current = 2;
+}
+
+<h1>Player Stats</h1>
+
+<div class="scroll">
+    <table class="center">
+        <tr>
+            <th class="narrow">Rank</th>
+            <th class="narrow">#</th>
+            <th>Player</th>
+            <th class="">GP</th>
+            <th class="">G</th>
+            <th class="">A</th>
+            <th class="highlight ">P</th>
+            <th class="">PPG</th>
+            <th class="">PIM</th>
+        </tr>
+        @foreach (var p in Model.Players.OrderByDescending(p => p.Points).ThenByDescending(p => p.Goals).ThenBy(p => p.GamesPlayed).ThenBy(p => p.Pim))
+        {
+            c++;
+
+            <tr>
+                <td class="dim">@c</td>
+                <td>@p.Number</td>
+                <td class="left">@p.Name</td>
+                <td>@p.GamesPlayed</td>
+                <td>@p.Goals</td>
+                <td>@p.Assists</td>
+                <td class="highlight">@p.Points</td>
+                <td>@p.Ppg</td>
+                <td>@p.Pim</td>
+            </tr>
+        }
+    </table>
+</div>

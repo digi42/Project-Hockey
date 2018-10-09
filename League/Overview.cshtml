@@ -1,0 +1,53 @@
+﻿@model PH.League.Model
+
+@{
+    ViewBag.Title = Model.FullName;
+    var today = DateTime.Now;
+    var todaysGames = Model.Games.Where(g => g.Date == today.Date);
+    var previous = Model.Games.Where(g => g.Date < today.Date);
+    var upcoming = Model.Games.Where(g => g.Date > today.Date);
+}
+
+<h2 class="center">Today's Games | @today.ToString("ddd, MMM d, yyyy")</h2>
+@if (todaysGames.Count() > 0)
+{
+    foreach (var gm in todaysGames)
+    {
+        @Html.Partial("/Game/GameHtml.cshtml", gm);
+    }
+}
+
+else
+{
+    <p class="center"><em>No games scheduled for today.</em></p>
+}
+<hr />
+<h3 class="center">Recent Scores</h3>
+@if (previous.Count() > 0)
+{
+    foreach (var gm in previous)
+    {
+        @Html.Partial("/Game/GameHtml.cshtml", gm);
+    }
+}
+
+else
+{
+    <p class="center"><em>No games in past 7 days.</em></p>
+}
+<hr />
+<h3 class="center">Upcoming Games</h3>
+@if (upcoming.Count() > 0)
+{
+    foreach (var gm in upcoming)
+    {
+        @Html.Partial("/Game/GameHtml.cshtml", gm);
+    }
+}
+
+else
+{
+    <p class="center"><em>No games scheduled for next 7 days.</em></p>
+}
+
+<p class="center"><a href="/league/@Model.LeagueId/schedule">View Full Schedule</a></p>

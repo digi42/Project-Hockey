@@ -1,0 +1,43 @@
+﻿@{ 
+    Layout = "/Shared/_Modal.cshtml";
+    var team = ViewBag.Team as PH.Team.Model;
+}
+
+<form id="player-instance" method="post" action="/player/save-instance">
+    <input type="hidden" class="volatile" name="InstanceId" />
+    <input type="hidden" name="TeamId" value="@team.TeamId"/>
+    <input type="hidden" name="SeasonId" value="@team.League.CurrentSeason" />
+    <fieldset>
+        <legend>Player</legend>
+        <div class="field x-short">
+            <label>Number</label>
+            <input type="number" min="0" max="125" name="Number" />
+        </div>
+        <input type="hidden" class="volatile" name="PlayerId" />
+        <div class="field long">
+            <label>Player</label>
+            <label id="player-name" class="holder"></label>
+            <button id="find-player-button" type="button">Find Player</button>
+            <button id="create-player-button" type="button">Create Player</button>
+            <button id="remove-player-button" type="button" class="hidden">Remove Player</button>
+        </div>
+    </fieldset>
+    <fieldset>
+        <input type="hidden" class="volatile" name="Position" />
+        <legend>Position (Optional)</legend>
+        <p class="instructions">Check all that apply.</p>
+        <div class="field">
+            <input type="checkbox" class="pos" value="1"/><label>Forward</label>
+            <input type="checkbox" class="pos" value="2"/><label>Defense</label>
+            <input type="checkbox" class="pos" value="4"/><label>Goalie</label>
+        </div>
+        <div class="field">
+            <input type="checkbox" class="pos" value="8"/><label>Center</label>
+            <input type="checkbox" class="pos" value="16"/><label>Left Wing</label>
+            <input type="checkbox" class="pos" value="32"/><label>Right Wing</label>
+        </div>
+    </fieldset>
+    <fieldset class="center">
+        <button class="confirm" type="submit">Save Roster Entry</button>
+    </fieldset>
+</form>

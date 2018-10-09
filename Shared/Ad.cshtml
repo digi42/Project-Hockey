@@ -1,0 +1,42 @@
+﻿@{ 
+    var league = ViewBag.League as PH.League.Model;
+}
+
+@if (league != null && league.SponsorLink != null)
+{
+    <p style="margin-bottom: 4px;">Brought to you by:</p>
+    <a class="spon"href="@league.SponsorLink" target="_blank">
+        <img src="/img/sponsors/@league.SponsorImage" alt="Sponsor" />
+    </a>
+}
+
+else {
+    <script type="text/javascript">
+
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        google_ad_client = "ca-pub-9534261299782694";
+
+        // skyscraper
+        if (width >= 1000) {
+            google_ad_slot = "7303597047";
+           google_ad_width = 300;
+           google_ad_height = 600;
+        }
+
+        // banner
+        else if ((width < 1000) && (width >= 800)) {
+            google_ad_slot = "4770116249";
+          google_ad_width = 728;
+          google_ad_height = 90;
+        }
+
+        // mobile
+        else {
+            google_ad_slot = "3320075848";
+          google_ad_width = 320;
+          google_ad_height = 100;
+        }
+
+    </script>
+    <script type="text/javascript" src="https://pagead2.googlesyndication.com/pagead/show_ads.js"> </script>
+}

@@ -1,0 +1,50 @@
+﻿@{ 
+    bool user = false;
+    if (Request.Cookies["_aspx"] != null || (Request.Cookies["_aspy"] != null && Request.Cookies["_aspz"] != null))
+    {
+        user = true;
+    }
+}
+<nav class="main-menu">
+    <section>
+        <ul>
+            <li class="sign-in">
+                <a href="@(user ? "/profile/manage" : "/profile/sign-in")">
+                    <img class="icon" src="/img/icons/user.svg" />
+                    <span>@(user ? "My Profile" : "Sign In")</span>
+                </a>
+            </li>
+            <li class="home">
+                <a href="/">
+                    <img class="logo" src="/img/project-hockey-light.svg" />
+                    <img class="icon" src="/img/icons/home.svg" />
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="/leagues">
+                    <img class="icon" src="/img/icons/search.svg" />
+                    <span>Find Leagues</span>
+                </a>
+            </li>
+            <li>
+                <a href="/support-project-hockey">
+                    <img class="icon" src="/img/icons/dollar.svg" />
+                    <span>Support Project Hockey</span>
+                </a>
+            </li>
+            @*<li>
+                <a href="/home/about">
+                    <img class="icon" src="/img/icons/question.svg" />
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="/home/contact">
+                    <img class="icon" src="/img/icons/mail.svg" />
+                    <span>Contact</span>
+                </a>
+            </li>*@
+        </ul>
+    </section>
+</nav>

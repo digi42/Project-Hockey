@@ -1,0 +1,23 @@
+﻿@{
+    Layout = "/Shared/_Master.cshtml";
+    ViewBag.Title = "Sign In";
+}
+
+<form method="post">
+    <fieldset>
+        <label>Email</label>
+        <input type="email" name="email" tabindex="1"/>
+        <a class="instructions" href="/profile/create">Create New Profile</a>
+    </fieldset>
+    <fieldset>
+        <label>Password</label>
+        <input type="password" name="password" tabindex="2"/>
+        <a class="instructions" href="/profile/forgot-password">Forgot Password</a>
+    </fieldset>
+    <fieldset>
+        <input type="checkbox" name="remember" tabindex="3" /><label>Remember Me</label>
+    </fieldset>
+    <fieldset>
+        <button class="fill" type="submit" tabindex="4">Sign In</button>
+    </fieldset>
+</form>

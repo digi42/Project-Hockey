@@ -1,0 +1,16 @@
+﻿@{     
+    var team = ViewBag.Team as PH.Team.Model;
+    int teamId = team.TeamId;
+    int c = ViewBag.Current ?? 10;
+    var s = ViewBag.League.Season.SeasonId;
+}
+
+<h1>@team.Name</h1>
+
+<div class="tabs links">
+    @*<li class="@(c == 0 ? "current": "")"><a href="/team/@teamId/summary/@sId">Summary</a></li>*@
+    <a class="tab @(c == 1 ? "active": "")" href="/team/@teamId/roster@(s == null ? "": "/" + s)">Roster</a>
+    <a class="tab @(c == 2 ? "active": "")" href="/team/@teamId/stats@(s == null ? "": "/" + s)">Player Stats</a>
+    <a class="tab @(c == 3 ? "active": "")" href="/team/@teamId/schedule@(s == null ? "": "/" + s)">Schedule</a>
+    @*<li class="@(c == 4 ? "current": "")"><a href="/team/@teamId/history/@sId">History</a></li>*@
+</div>

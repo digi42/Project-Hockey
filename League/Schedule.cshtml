@@ -1,0 +1,149 @@
+﻿@model PH.League.Model
+
+@{ 
+    ViewBag.Title += "Schedule";
+
+    // get ordered list of games to prevent sorting mutliple times
+    Model.Games.Sort();
+
+    // segregate months for tab view
+    var months = Model.Games.Select(g => g.Date.ToString("MMM")).Distinct();
+
+    // get current month as default view for schedule
+    // OR last month if season is compelted
+    // OR first month if season hasn't started yet
+    var last = Model.Games.LastOrDefault();
+    var first = Model.Games.FirstOrDefault();
+
+    var now = DateTime.Now.ToString("MMM");
+    if (last != null && DateTime.Now > last.Date) { now = last.Date.ToString("MMM"); }
+    else if (first != null && DateTime.Now < first.Date) { now = first.Date.ToString("MMM"); }
+
+}
+
+<h1>Schedule | @Model.Season.Name</h1>
+
+
+@if (ViewBag.Admin)
+{
+    <div class="management-tools">
+        <h4>Manager Tools</h4>
+        <button name="game-form" type="button" class="open-modal confirm" data-modal-title="Create Game">Create Game</button>
+    </div>
+}
+
+<div class="dropdown">
+    <label>Season: </label>
+    <select class="dropdown" onchange="location = this.value;">
+        @foreach (var s in Model.Seasons.OrderByDescending(s => s))
+        {
+            <option value="/league/@Model.LeagueId/schedule/@s.SeasonId" @(s.SeasonId == Model.Season.SeasonId ? "selected" : "")>@s.Name</option>
+        }
+    </select>
+</div>
+
+<div class="tabs">
+    @foreach (var m in months)
+    {
+        <div class="tab @(m == now ? "active" : "")" data-name="@m">@m</div>
+    }
+</div>
+@foreach (var m in months)
+{
+    <div class="tab-page scroll" data-name="@m" style="@(m == now ? "display:block;" : "")">
+        <table class="grid plain">
+            @foreach (var date in Model.Games.Where(g => g.Date.ToString("MMM") == m).Select(g => g.Date.ToString("ddd, MMM dd, yyyy")).Distinct())
+            {
+                <tr class="bar"><td colspan="4">@date</td></tr>
+                foreach (var game in Model.Games.Where(g => g.Date.ToString("ddd, MMM dd, yyyy") == date))
+                {
+                    game.Away = Model.Teams.FirstOrDefault(tm => tm.TeamId == game.AwayId);
+                    game.Home = Model.Teams.FirstOrDefault(tm => tm.TeamId == game.HomeId);
+                    game.Goals = Model.Goals.Where(gl => gl.GameId == game.GameId).ToList();
+                    game.Shootouts = Model.Shootouts.Where(sh => sh.GameId == game.GameId).ToList();
+                    if (game.RinkId != null)
+                    {
+                        game.Rink = Model.Rinks.FirstOrDefault(rn => rn.RinkId == game.RinkId.Value);
+                    }
+                    if (game.SurfaceId != null)
+                    {
+                        game.Surface = Model.Surfaces.FirstOrDefault(sf => sf.SurfaceId == game.SurfaceId.Value);
+                    }
+
+                    <tr class="@(game.Completed ? "dim" : "")">
+                        @if (ViewBag.Admin)
+                        {
+                            <td class="relative">
+                                <img src="/img/icons/dots.png" class="options-opener" />
+                                <ul class="options">
+                                    <li><a href="/game/@game.GameId/boxscore">View Game</a></li>
+
+                                    @if (!game.Completed && !game.InProgress)
+                                    {
+                                        <li class="edit-game" data-id="@game.GameId">Edit Game</li>
+                                        if (game.AwayId != null && game.HomeId != null)
+                                        {
+                                            <li class="forfeit" data-id="@game.GameId">Forfeit</li>
+                                        }
+                                        <li class="delete-game" data-id="@game.GameId">Delete Game</li>
+                                    }
+
+                                    else if (game.Forfeit)
+                                    {
+                                        <li class="remove-forfeit" data-id="@game.GameId">Remove Forfeit</li>
+                                    }
+
+                                    <li class="options-cancel">Cancel</li>
+                                </ul>
+                            </td>
+                        }
+
+
+                        <td>@game.FormattedTime<br />@game.Location</td>
+                        <td class="fill">
+                            @if (game.Completed && !game.Forfeit)
+                            {
+                                <span class="@(game.AwayScore > game.HomeScore ? "highlight":"")">@game.AwayName (@game.AwayScore)</span><br/>
+                                <span class="@(game.HomeScore > game.AwayScore ? "highlight":"")">@@ @game.HomeName (@game.HomeScore)</span>
+                            }
+
+                            else if (game.InProgress)
+                            {
+                                <span>@game.AwayName (@game.AwayScore)</span><br/>
+                                <span>@@ @game.HomeName (@game.HomeScore)</span>
+                            }
+
+                            else if (game.Forfeit)
+                            {
+                                <span class="@(!game.AwayForfeit ? "highlight":"")">@game.AwayName (@(game.AwayForfeit ? "FL" : "FW"))</span><br />
+                                <span class="@(!game.HomeForfeit ? "highlight":"")">@@ @game.HomeName (@(game.HomeForfeit ? "FL" : "FW"))</span>
+                            }
+
+                            else
+                            {
+                                <span>@game.AwayName</span><br /><span>@@ @game.HomeName</span>
+                            }
+                        </td>
+                        <td>@game.GetDescription()<br /><a class="link" href="/game/@game.GameId/Boxscore">@game.Status</a></td>
+                    </tr>
+                }
+                <tr class="spacer"></tr>
+            }
+        </table>
+    </div>
+}
+
+@if (ViewBag.Admin){
+
+    @Html.Partial("/Game/GameForm.cshtml")
+    @Html.Partial("/Game/ForfeitForm.cshtml")
+
+    @section Scripts
+    {
+        <script src="/game/game.js"></script>
+        <script>
+            var games = @Html.Raw(Json.Encode(Model.Games));
+            var surfaces = @Html.Raw(Json.Encode(Model.Surfaces));
+        </script>
+    }
+}

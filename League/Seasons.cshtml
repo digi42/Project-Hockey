@@ -1,0 +1,43 @@
+﻿@model List<PH.Season.Model>
+
+
+@{
+    int count = 0;
+    ViewBag.Title += "Seasons";
+}
+
+<h1>Seasons</h1>
+
+@if (ViewBag.Admin)
+{
+    <div class="management-tools">
+        <h4>Manager Tools</h4>
+        <button name="season-form" type="button" class="open-modal confirm" data-modal-title="Create New Season">Create New Season</button>
+    </div>
+}
+
+<div class="scroll">
+    <table class="center">
+        <thead>
+            <tr>
+                <th></th>
+                <th class="wide">Season</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var season in Model.OrderBy(x => x.Year).ThenByDescending(x => x.SeasonStart == 0).ThenByDescending(x => x.SeasonStart == 2).ThenByDescending(x => x.SeasonStart == 3).ThenByDescending(x => x.SeasonStart == 4).ThenByDescending(x => x.SeasonStart == 1))
+            {
+                count++;
+                <tr>
+                    <td>@count</td>
+                    <td>@season.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@if (ViewBag.Admin)
+{
+    @Html.Partial("/Season/SeasonForm.cshtml")
+}

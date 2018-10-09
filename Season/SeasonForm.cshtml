@@ -1,0 +1,83 @@
+﻿@{
+    Layout = "/Shared/_Modal.cshtml";
+}
+
+<form id="season-form" action="/season/save" method="post">
+    <input type="hidden" class="volatile" name="SeasonId"/>
+    <input type="hidden" name="LeagueId" value="@ViewBag.League.LeagueId"/>
+    <fieldset>
+        <legend class="season-name">Season Info</legend>
+        <div class="field medium">
+            <label>Season Start</label>
+            <select name="SeasonStart">
+                @PH.Util.Helpers.GetSelectOptions(typeof(SeasonStart))
+            </select>
+        </div>
+        <div class="field medium">
+            <label>Year</label>
+            <input type="number" name="Year" required />
+        </div>
+        <div class="field medium">
+            <label>Year Rollover</label>
+            <input type="checkbox" name="YearRollover" />
+            <label>Yes</label>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Game Info</legend>
+        <div class="field medium">
+            <label># of Periods</label>
+            <input type="number" name="PeriodCount" required />
+        </div>
+        <div class="field medium">
+            <label>Period Length</label>
+            <input type="text" name="PeriodLength" class="mask duration" data-inputmask="'mask': '99:99'" required />
+        </div>
+        <div class="field medium">
+            <label>Running Time</label>
+            <input type="checkbox" name="RunningTime" />
+            <label>Yes</label>
+        </div>
+        <!--
+        <div class="field short">
+            <label>Time Elapsed</label>
+            <input type="checkbox" name="TimeElapsed" />
+            <label>Yes</label>
+        </div>
+            -->
+    </fieldset>
+    <!--
+    <fieldset>
+        <legend>Scoring Info</legend>
+        <div class="field medium">
+            <label>Use Olympic Point System?</label>
+            <input type="checkbox" name="OlympicPointSystem" />
+        </div>
+    </fieldset>
+        -->
+    <fieldset>
+        <legend>Penalty Info</legend>
+        <div class="field half">
+            <label>Minor Penalty Length</label>
+            <input type="text" name="MinorPenaltyLength" class="mask" data-inputmask="'mask': '9:99'" required />
+        </div>
+        <div class="field half">
+            <label>Major Penalty Length</label>
+            <input type="text" name="MajorPenaltyLength" class="mask" data-inputmask="'mask': '9:99'" required />
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Roster Info</legend>
+        <div class="field medium">
+            <label>Roster Limit</label>
+            <input type="number" name="RosterLimit" value="20" required />
+        </div>
+        <div class="field medium">
+            <label>Roster Lock Date</label>
+            <input type="date" name="RosterLockDate" required />
+        </div>
+    </fieldset>
+    <fieldset class="center">
+        <button class="confirm">Save Season</button>
+    </fieldset>
+</form>

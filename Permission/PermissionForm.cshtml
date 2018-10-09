@@ -1,0 +1,51 @@
+﻿@{
+    Layout = "/Shared/_Modal.cshtml";
+    var perms = ViewBag.Perms as List<PH.Permission.ViewModel>;
+    var team = ViewBag.Team as PH.Team.Model;
+}
+
+<form id="permission-form" action="/permission/add" method="post">
+    <input type="hidden" name="ObjectId" value="@team.TeamId"/>
+    <input type="hidden" name="Type" value="3" />
+    <fieldset>
+        <legend>Current Permissions</legend>
+        
+        @if (perms.Count > 0)
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Options</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in perms)
+                    {
+                        <tr>
+                            <td>@p.Name</td>
+                            <td>@p.Email</td>
+                            <td><a class="remove-permission" href="/permission/@p.PermissionId/remove">Remove</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        else
+        {
+            <p class="center"><em>No permissions assigned yet.</em></p>
+        }
+    </fieldset>
+    <fieldset class="push-down">
+        <legend>Add Team Manager</legend>
+        <div class="field full">
+            <label>Email</label>
+            <input type="email" name="email"/>
+        </div>
+    </fieldset>
+    <fieldset class="center">
+        <button class="confirm">Add Manager</button>
+    </fieldset>
+</form>

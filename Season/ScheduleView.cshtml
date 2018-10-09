@@ -1,0 +1,79 @@
+﻿@model List<PH.Game.ViewModel>
+
+@{ 
+    ViewBag.Title += "Schedule";
+    var date = DateTime.Now.Date;
+    var pending = Model.Where(g => !g.Game.Completed && g.Game.Date < date).OrderBy(g => g.Game.Date).ToList();
+    var upcoming = Model.Where(g => g.Game.Date >= date || !g.Game.Date.HasValue).OrderByDescending(g => g.Game.Date.HasValue).ThenBy(g => g.Game.Date).ToList();
+    var completed = Model.Where(g => g.Game.Completed && g.Game.Date < date).OrderByDescending(g => g.Game.Date).ToList();
+    var season = ViewBag.Season as PH.Season.Model;
+}
+
+<h1>Schedule | @season.Name</h1>
+@if (ViewBag.Admin)
+{
+    <div class="management-tools">
+        <h4>Manager Tools</h4>
+        <button name="game-form" type="button" class="open-modal confirm" data-modal-title="Create Game">Create Game</button>
+    </div>
+}
+
+@if (pending.Count() > 0)
+{
+    <h1>Pending Games</h1>
+    foreach (var d in pending.Select(g => g.Game.Date).Distinct())
+    {
+        <h3 class="banner no-margin">@d.Value.ToString("ddd, MMM dd, yyyy")</h3>        
+        <div class="table">
+            @foreach (var g in pending.Where(g => g.Game.Date == d).OrderBy(g => g.Game.Time))
+            {
+                @Html.Partial("/Game/GameDisplay.cshtml", g)
+            }
+        </div>
+    }
+}
+
+@if (upcoming.Count() > 0)
+{
+    <h1>Upcoming Games</h1>
+    foreach (var d in upcoming.Select(g => g.Game.Date).Distinct().OrderByDescending(d => d.HasValue))
+    {
+        <h3 class="banner no-margin">@(d != null ? d.Value.ToString("ddd, MMM dd, yyyy") : "Date To Be Determined")</h3>
+        <div class="table scroll">
+            @foreach (var g in upcoming.Where(g => g.Game.Date == d).OrderByDescending(g => g.Game.Time.HasValue).ThenBy(g => g.Game.Time))
+            {
+                @Html.Partial("/Game/GameDisplay.cshtml", g)
+            }
+        </div>
+    }
+}
+
+@if (completed.Count() > 0)
+{
+    <h1>Completed Games</h1>
+    foreach (var d in completed.Select(g => g.Game.Date).Distinct())
+    {
+        <h3 class="banner no-margin">@d.Value.ToString("ddd, MMM dd, yyyy")</h3>        
+        <div class="table">
+            @foreach (var g in completed.Where(g => g.Game.Date == d).OrderBy(g => g.Game.Time))
+            {
+                @Html.Partial("/Game/GameDisplay.cshtml", g)
+            }
+        </div>
+    }
+}
+
+@if (ViewBag.Admin){
+
+    @Html.Partial("/Game/GameForm.cshtml")
+    @Html.Partial("/Game/ForfeitForm.cshtml")
+
+    @section Scripts
+    {
+        <script src="/game/game.js"></script>
+        <script>
+            var games = @Html.Raw(Json.Encode(ViewBag.Games));
+            var surfaces = @Html.Raw(Json.Encode(ViewBag.Surfaces));
+        </script>
+    }
+}

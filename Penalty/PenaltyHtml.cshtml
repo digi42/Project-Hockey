@@ -1,0 +1,18 @@
+﻿@model PH.Penalty.Model
+
+<div class="row @(Model.Home ? "dim":"")">
+    @if (Model.CanEdit)
+    {
+        <div class="controls cell">
+            <img src="/img/icons/pencil.svg" class="edit-penalty" title="Edit Penalty" data-goal-id="@Model.PenaltyId" />
+
+            @if (Model.CanDelete)
+            {
+                <img src="/img/icons/trash.svg" class="delete-penalty" title="Delete Penalty" data-goal-id="@Model.PenaltyId" />
+            }
+        </div>
+    }
+    <div class="cell">@Model.TeamAbbreviation</div>
+    <div class="cell right">@Model.GetTime()</div>
+    <div class="cell">@Model.PlayerName - @Model.Infraction <em>(@Model.Duration @Model.Severity)</em></div>
+</div>

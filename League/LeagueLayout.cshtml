@@ -1,0 +1,13 @@
+﻿@{
+    Layout = "/Shared/_Master.cshtml";
+}
+
+@section Header {
+    @Html.Partial("/League/LeagueHeader.cshtml")
+}
+
+@section Scripts {
+    @RenderSection("Scripts", false)
+}
+
+@RenderBody()

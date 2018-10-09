@@ -1,0 +1,18 @@
+﻿@model PH.Goal.Model
+
+<div class="row @(Model.Home ? "dim":"")">
+    @if (Model.CanEdit)
+    {
+        <div class="controls cell">
+            <img src="/img/icons/pencil.svg" class="edit-goal" title="Edit Goal" data-goal-id="@Model.GoalId" />
+
+            @if (Model.CanDelete)
+            {
+                <img src="/img/icons/trash.svg" class="delete-goal" title="Delete Goal" data-goal-id="@Model.GoalId" />
+            }
+        </div>
+    }
+    <div class="cell">@Model.TeamAbbreviation</div>
+    <div class="cell right">@Model.GetTime()</div>
+    <div class="cell">@Model.ScorerName<em> (@Model.Assists)</em></div>
+</div>

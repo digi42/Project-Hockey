@@ -1,0 +1,45 @@
+﻿@model List<PH.Team.ViewModel>
+
+@{
+    int seasonId = ViewBag.League.SeasonId;
+    int count = 0;
+    ViewBag.Title += "Standings";
+}
+
+<h1>Standings</h1>
+<div class="scroll">
+    <table class="center">
+        <thead>
+            <tr>
+                <th></th>
+                <th class="wide">Team</th>
+                <th>GP</th>
+                <th>W</th>
+                <th>L</th>
+                <th>SOL</th>
+                <th class="highlight">P</th>
+                <th>GF</th>
+                <th>GA</th>
+                <th>PIM</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var team in Model.OrderByDescending(x => x.Points).ThenBy(x => x.GamesPlayed).ThenByDescending(x => x.Wins).ThenBy(x => x.GoalsAgainst).ThenBy(x => x.Pim).ThenBy(x => x.Team.Name))
+            {
+                count++;
+                <tr>
+                    <td>@count</td>
+                    <td class="left"><a href="/team/@team.Team.TeamId/schedule/@seasonId">@team.Team.Name</a></td>
+                    <td>@team.GamesPlayed</td>
+                    <td>@team.Wins</td>
+                    <td>@team.Losses</td>
+                    <td>@team.Ties</td>
+                    <td class="highlight">@team.Points</td>
+                    <td>@team.GoalsFor</td>
+                    <td>@team.GoalsAgainst</td>
+                    <td>@team.Pim</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

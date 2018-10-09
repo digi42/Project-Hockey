@@ -1,0 +1,73 @@
+﻿@{ 
+    Layout = "/Shared/_Modal.cshtml";
+}
+
+<form id="player-form" action="/player/save" method="post" class="ajax">
+    <input type="hidden" class="volatile" name="PlayerId"/>
+    <div class="field">
+        <label>First Name</label>
+        <input type="text" name="FirstName" required/>
+    </div>
+    <div class="field">
+        <label>Last Name</label>
+        <input type="text" name="LastName" required/>
+    </div>
+    @*<fieldset>
+        <legend>Optional Info</legend>
+        <div class="field medium">
+            <label>Date of Birth</label>
+            <input type="text" name="BirthDate" placeholder="m/d/yyyy"/>
+        </div>
+        <div class="field medium">
+            <label>Hometown</label>
+            <input type="text" name="HomeCity"/>
+        </div>
+        <div class="field medium">
+            <label>Home Region</label>
+            <select name="HomeRegion">
+                @PH.Util.Helpers.GetSelectOptions(typeof(Region))
+            </select>
+        </div>
+        <div class="field medium">
+            <label>Height</label>
+            <input type="hidden" class="volatile" name="Height"/>
+            <select class="auto height">
+                <option value=""></option>
+                <option value="3">3'</option>
+                <option value="4">4'</option>
+                <option value="5">5'</option>
+                <option value="6">6'</option>
+            </select>
+            <select class="auto height">
+                <option value=""></option>
+                <option value="0">0"</option>
+                <option value="1">1"</option>
+                <option value="2">2"</option>
+                <option value="3">3"</option>
+                <option value="4">4"</option>
+                <option value="5">5"</option>
+                <option value="6">6"</option>
+                <option value="7">7"</option>
+                <option value="8">8"</option>
+                <option value="9">9"</option>
+                <option value="10">10"</option>
+                <option value="11">11"</option>
+            </select>
+        </div>
+        <div class="field medium">
+            <label>Weight</label>
+            <input type="number" min="50" max="300" name="Weight"/>
+        </div>
+        <div class="field medium">
+            <label>Shoots</label>
+            <select name="LeftHanded">
+                <option value="null"></option>
+                <option value="false">Right</option>
+                <option value="true">Left</option>
+            </select>
+        </div>
+    </fieldset>*@
+    <fieldset class="center">
+        <button class="confirm">Save Player</button>
+    </fieldset>
+</form>

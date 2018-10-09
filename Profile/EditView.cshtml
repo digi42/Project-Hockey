@@ -1,0 +1,33 @@
+﻿@model PH.Profile.Model
+
+@{ 
+    Layout = "_ProfileLayout.cshtml";
+    ViewBag.Title = "Edit Profile";
+}
+
+<h1>Edit Profile</h1>
+<form method="post">
+    @if (TempData["Error"] != null)
+    {
+        <div class="errors">@TempData["Error"]</div>
+    }
+    <input type="hidden" value="@Model.Email" name="originalEmail" />
+    <input type="hidden" value="@Model.ProfileId" name="profileId"/>
+    <fieldset>
+        <label for="firstName">First Name</label>
+        <input type="text" name="firstName" tabindex="1" value="@Model.FirstName" required autofocus />
+    </fieldset>
+    <fieldset>
+        <label for="lastName">Last Name</label>
+        <input type="text" name="lastName" tabindex="2" value="@Model.LastName" required />
+    </fieldset>
+    <fieldset>
+        <label for="email">Email</label>
+        <input type="email" name="email" tabindex="3" value="@Model.Email" required />
+    </fieldset>
+    <fieldset>
+        <button class="confirm" type="submit" tabindex="4">Save Profile</button>
+        <a class="button cancel" href="/profile/my-profile">Cancel</a>
+    </fieldset>
+</form>
+

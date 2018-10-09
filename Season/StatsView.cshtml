@@ -1,0 +1,44 @@
+﻿@model PH.Player.StatsViewModel
+
+@{
+    int c = 0;
+    ViewBag.Title += "Player Stats";
+    var teams = ViewBag.League.Teams as List<PH.Team.Model>;
+}
+
+<h1>Player Stats</h1>
+
+<div class="scroll">
+    <table class="center">
+        <tr>
+            <th class="narrow">Rank</th>
+            <th class="narrow">Team</th>
+            <th class="narrow">#</th>
+            <th>Player</th>
+            <th class="">GP</th>
+            <th class="">G</th>
+            <th class="">A</th>
+            <th class="highlight ">P</th>
+            <th class="">PPG</th>
+            <th class="">PIM</th>
+        </tr>
+        @foreach (var p in Model.Players.OrderByDescending(p => Model.Points(p)).ThenByDescending(p => Model.GoalCount(p)).ThenBy(p => Model.GamesPlayed(p)).ThenBy(p => Model.Pim(p)))
+        {
+            c++;
+            var t = teams.FirstOrDefault(x => x.TeamId == p.TeamId);
+            <tr>
+                <td class="dim">@c</td>
+                <td>@(t != null ? t.Abbreviation : "<N/A>")</td>
+                <td>@p.Number</td>
+                <td class="left">@p.Name</td>
+                <td>@Model.GamesPlayed(p)</td>
+                <td>@Model.GoalCount(p)</td>
+                <td>@Model.Assists(p)</td>
+                <td class="highlight">@Model.Points(p)</td>
+                <td>@Model.PPG(p).ToString("0.00")</td>
+                <td>@Model.Pim(p)</td>
+            </tr>
+            if (c == 25) { break; }
+        }
+    </table>
+</div>

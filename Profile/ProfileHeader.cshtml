@@ -1,0 +1,13 @@
+﻿@{ 
+    int c = ViewBag.Current ?? 10;
+    var profile = ViewBag.Profile as PH.Profile.Model;
+}
+
+<h1>@(profile != null ? profile.Name : "My Profile")</h1>
+
+<nav>
+    <ul class="sub-menu">
+        <li class="@(c == 0 ? "current": "")"><a href="/profile/Manage">Manage</a></li>
+        <li class="@(c == 1 ? "current": "")"><a href="/profile/todays-games">Today's Games</a></li>        
+    </ul>
+</nav>

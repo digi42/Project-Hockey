@@ -1,0 +1,61 @@
+﻿@{
+    var l = ViewBag.League as PH.League.Model;
+    var id = l.LeagueId;
+}
+
+<section class="league-header">
+    @if (l.Logo != null)
+    {
+        <img class="logo" src="/img/logos/@l.Logo" />
+    }
+    <div class="info">
+        <h2>@l.Name</h2>
+        @if (l.ParentLeagueId != null)
+        {
+            <h3>@l.ParentLeagueName | @l.Season.Name</h3>
+        }
+    </div>
+</section>
+
+<nav class="league-menu">
+    <section>
+        <ul>
+            <li><a href="/league/@id">Scores</a></li>
+            <li><a href="/league/@id/standings">Standings</a></li>
+            <li><a href="/league/@id/schedule">Schedule</a></li>
+            <li><a href="/league/@id/stats">Stats</a></li>
+            @if (l.Rules != null)
+            {
+                            <li><a href="/doc/@l.Rules" target="_blank">Rules</a></li>
+            }
+
+            @if (l.Contact != null)
+            {
+                            <li><a href="/league/@id/contact">Contact</a></li>
+            }
+            <li>
+                <a href="/league/@id/teams">Teams</a>
+                <ul>
+                    @foreach (var t in l.Teams.Where(t => t.Active).OrderBy(t => t.Name))
+                    {
+                        <li><a href="/team/@t.TeamId/roster/@l.Season.SeasonId">@t.Name</a></li>
+                    }
+                </ul>
+            </li>   
+            @*@if (l.OtherLeagues != null && l.OtherLeagues.Count > 0)
+            {
+                <li>
+                    <a href="#">More Leagues</a>
+                    <ul>
+                        @foreach (var lg in l.OtherLeagues.OrderBy(lg => lg.Name))
+                        {
+                            <li><a href="/league/@lg.LeagueId/scores">@lg.Name</a></li>
+                        }
+                    </ul>
+                </li>
+            }*@
+
+        </ul>
+    </section>
+</nav>
+
